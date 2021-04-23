@@ -53,6 +53,10 @@ var options = {
     threshold: {
         type: Number,
         "default": 25
+    },
+    clickOutside: {
+        type: Boolean,
+        "default": true
     }
 };
 var SheetItem = defineComponent({
@@ -221,14 +225,14 @@ var SheetContainer = defineComponent({
             return h('div', {
                 id: 'vier-sheet-container',
                 onClick: function (event) {
-                    if (canClose.value) {
+                    if (canClose.value && _props.clickOutside) {
                         if (event.target !== event.currentTarget)
                             return;
                         shouldClose.value = true;
                     }
                 },
                 style: style.value,
-                "class": "" + (shouldClose.value ? 'anim-out' : '')
+                "class": "" + (shouldClose.value ? 'vier-anim-out' : '')
             }, [
                 h(SheetItem, __assign(__assign({}, props.shiftAttrs), { shouldClose: shouldClose.value, onDestroy: function () {
                         emit('closeSheet');

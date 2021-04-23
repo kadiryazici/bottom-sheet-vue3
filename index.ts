@@ -30,6 +30,7 @@ interface Props<S = string, N = number> {
    sliderIconColor: S;
    threshold: N;
    radius: S;
+   clickOutside: Boolean;
 }
 
 const options = {
@@ -72,6 +73,10 @@ const options = {
    threshold: {
       type: Number as PropType<number>,
       default: 25
+   },
+   clickOutside: {
+      type: Boolean as PropType<boolean>,
+      default: true
    }
 };
 
@@ -270,13 +275,13 @@ const SheetContainer = defineComponent({
             {
                id: 'vier-sheet-container',
                onClick: (event: MouseEvent) => {
-                  if (canClose.value) {
+                  if (canClose.value && _props.clickOutside) {
                      if (event.target !== event.currentTarget) return;
                      shouldClose.value = true;
                   }
                },
                style: style.value,
-               class: `${shouldClose.value ? 'anim-out' : ''}`
+               class: `${shouldClose.value ? 'vier-anim-out' : ''}`
             },
             [
                h(

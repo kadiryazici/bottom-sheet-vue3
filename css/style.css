@@ -11,20 +11,22 @@
    display: flex;
    justify-content: center;
    align-items: flex-end;
-   transition: background-color 0.35s;
+   transition: 0.35s background-color;
 }
 
-#vier-sheet-container:last-child {
+#vier-sheet-container:last-of-type {
    background-color: var(--container-color);
+   animation: vier-backgroundIn 0.35s;
 }
 
-/* body #vier-sheet-container:last-of-type:not(.anim-out) {
+#vier-sheet-container:last-of-type {
+   background-color: var(--container-color);
    animation: vier-backgroundIn 0.35s;
-} */
+}
 
-#vier-sheet-container.anim-out:last-child {
-   /* animation: vier-backgroundOut 0.35s forwards !important; */
-   background-color: transparent;
+.vier-anim-out:last-of-type {
+   animation: vier-backgroundOut 0.35s forwards !important;
+   /* background-color: transparent; */
 }
 
 #vier-sheet-container > .vier-sheet {

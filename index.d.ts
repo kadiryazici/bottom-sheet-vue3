@@ -42,6 +42,10 @@ export declare const Sheet: import("vue").DefineComponent<{
         type: PropType<number>;
         default: number;
     };
+    clickOutside: {
+        type: PropType<boolean>;
+        default: boolean;
+    };
     visible: {
         type: PropType<boolean>;
         required: true;
@@ -61,6 +65,7 @@ export declare const Sheet: import("vue").DefineComponent<{
     sliderIconColor: string;
     radius: string;
     threshold: number;
+    clickOutside: boolean;
     visible: boolean;
 } & {}>, {
     minHeight: string;
@@ -73,4 +78,5 @@ export declare const Sheet: import("vue").DefineComponent<{
     sliderIconColor: string;
     radius: string;
     threshold: number;
+    clickOutside: boolean;
 }>;
