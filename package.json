@@ -1,0 +1,13 @@
+{
+   "name": "vue3-bottom-sheet",
+   "version": "1.0.0",
+   "description": "Bottom Sheet component for vue3.",
+   "main": "./index.js",
+   "types": "./index.d.ts",
+   "repository": "https://github.com/kadiryazici/bottom-sheet-vue3",
+   "author": "kadiryazici",
+   "license": "MIT",
+   "dependencies": {
+      "vue": "next"
+   }
+}

@@ -1,0 +1,91 @@
+#vier-sheet-container {
+   position: fixed;
+   width: 100vw;
+   height: 100vh;
+   max-height: -webkit-fill-available;
+   max-height: -moz-available;
+   max-height: fill-available;
+   z-index: 99999;
+   display: flex;
+   justify-content: center;
+   align-items: flex-end;
+   background-color: var(--sheet-container-color);
+}
+
+#vier-sheet-container:not(.anim-out) {
+   animation: vier-backgroundIn 0.35s;
+}
+
+#vier-sheet-container.anim-out {
+   animation: vier-backgroundOut 0.35s forwards !important;
+}
+
+.vier-sheet {
+   height: 90%;
+   width: 100%;
+   max-width: 500px;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   margin: 0 auto;
+   background-color: white;
+
+   border-top-left-radius: 25px;
+   border-top-right-radius: 25px;
+   box-shadow: 0px -6px 6px -4px rgba(0, 0, 0, 0.259);
+   display: flex;
+   flex-flow: column nowrap;
+   overflow: hidden;
+   animation: vier-slideIn 0.35s ease;
+}
+
+.vier-sheet-head {
+   width: 100%;
+   padding: 15px 10px;
+   user-select: none;
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   -webkit-touch-callout: none;
+}
+
+.vier-sheet-head .vier-head-icon {
+   width: 25%;
+   height: 8px;
+   border-radius: 20px;
+   background-color: rgba(44, 43, 43, 0.416);
+   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.198);
+   margin: 0 auto;
+}
+
+.vier-sheet-body {
+   width: calc(100%);
+   height: 100%;
+   overflow: auto;
+}
+
+@keyframes vier-slideIn {
+   0% {
+      transform: translateY(105%);
+   }
+   100% {
+      transform: translateY(0%);
+   }
+}
+
+@keyframes vier-backgroundIn {
+   0% {
+      background-color: transparent;
+   }
+   100% {
+      background-color: var(--sheet-container-color);
+   }
+}
+
+@keyframes vier-backgroundOut {
+   100% {
+      background-color: transparent;
+   }
+   0% {
+      background-color: var(--sheet-container-color);
+   }
+}
