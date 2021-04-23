@@ -279,16 +279,6 @@ const SheetContainer = defineComponent({
                   SheetItem,
                   {
                      ...props.shiftAttrs,
-                     containerColor: _props.containerColor,
-                     height: _props.height,
-                     maxHeight: _props.maxHeight,
-                     maxWidth: _props.maxWidth,
-                     minHeight: _props.minHeight,
-                     radius: _props.radius,
-                     sheetColor: _props.sheetColor,
-                     sliderIconColor: _props.sliderIconColor,
-                     slideIcon: _props.slideIcon,
-                     threshold: _props.threshold,
 
                      shouldClose: shouldClose.value,
                      onHide: () => {
