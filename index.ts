@@ -1,3 +1,5 @@
+'use strict';
+
 import {
    defineComponent,
    h,
@@ -6,15 +8,71 @@ import {
    onMounted,
    computed,
    watch,
+   createVNode,
+   isVNode,
+   provide,
+   InjectionKey,
+   inject,
 } from 'vue';
 
-const SheetHead = h(
-   'div',
-   {
-      class: 'vier-sheet-head',
+const defaultSlideIcon = createVNode('div', { class: 'vier-head-icon' });
+const injectKey: InjectionKey<Props> = Symbol();
+
+interface Props<S = string, N = number> {
+   minHeight: S;
+   maxWidth: S;
+   maxHeight: S;
+   height: S;
+   slideIcon: any;
+   containerColor: S;
+   sheetColor: S;
+   sliderIconColor: S;
+   threshold: N;
+   radius: S;
+}
+
+const options = {
+   minHeight: {
+      default: 'auto',
+      type: String as PropType<string>,
    },
-   [h('div', { class: 'vier-head-icon' })]
-);
+   maxWidth: {
+      default: '500px',
+      type: String as PropType<string>,
+   },
+   maxHeight: {
+      default: '90%',
+      type: String as PropType<string>,
+   },
+   height: {
+      default: 'auto',
+      type: String as PropType<string>,
+   },
+   slideIcon: {
+      default: defaultSlideIcon,
+      type: null,
+   },
+   containerColor: {
+      default: 'rgba(0,0,0,.5)',
+      type: String as PropType<string>,
+   },
+   sheetColor: {
+      default: '#fff',
+      type: String as PropType<string>,
+   },
+   sliderIconColor: {
+      default: 'rgba(0, 0, 0, 0.416)',
+      type: String as PropType<string>,
+   },
+   radius: {
+      default: '25px',
+      type: String as PropType<string>,
+   },
+   threshold: {
+      type: Number as PropType<number>,
+      default: 25,
+   },
+};
 
 const SheetItem = defineComponent({
    name: 'VierSheetItem',
@@ -116,12 +174,10 @@ const SheetItem = defineComponent({
          }
       );
 
+      const _props = inject(injectKey)!;
       function onTouchMouseUp(e: MouseEvent | TouchEvent) {
          e.preventDefault();
-
-         if (yTotal.value > 175) {
-            // console.log(sheetBeginningTop.value);
-            // closeSheet();
+         if (yTotal.value >= _props.threshold) {
             emit('closeStart');
          } else {
             transformY.value = 0;
@@ -135,7 +191,6 @@ const SheetItem = defineComponent({
          window.removeEventListener('mouseup', onTouchMouseUp);
          window.removeEventListener('touchend', onTouchMouseUp);
       }
-
       return () =>
          h(
             'div',
@@ -145,11 +200,16 @@ const SheetItem = defineComponent({
                style: style.value,
             },
             [
-               h(SheetHead, {
-                  ref: sheetHead,
-                  onMousedown: onTouchMouseDown,
-                  onTouchstart: onTouchMouseDown,
-               }),
+               h(
+                  'div',
+                  {
+                     class: 'vier-sheet-head',
+                     ref: sheetHead,
+                     onMousedown: onTouchMouseDown,
+                     onTouchstart: onTouchMouseDown,
+                  },
+                  [_props.slideIcon]
+               ),
                h(
                   'div',
                   { class: 'vier-sheet-body' },
@@ -169,15 +229,37 @@ const SheetContainer = defineComponent({
       closeSheet: () => true,
    },
    props: {
-      visible: {
+      shiftAttrs: {
+         type: Object as PropType<Object>,
+      },
+      shouldWrapperClose: {
          type: Boolean as PropType<boolean>,
-         required: true,
       },
    },
 
    setup(props, { attrs, slots, emit }) {
       const shouldClose = ref(false);
       const canClose = ref(false);
+      watch(
+         () => props.shouldWrapperClose,
+         v => {
+            if (v) {
+               shouldClose.value = true;
+            }
+         }
+      );
+      const _props = inject(injectKey)!;
+      const style = computed(() => ({
+         '--container-color': _props.containerColor,
+         '--sheet-color': _props.sheetColor,
+         '--sheet-height': _props.height,
+         '--sheet-max-height': _props.maxHeight,
+         '--sheet-max-width': _props.maxWidth,
+         '--sheet-min-height': _props.minHeight,
+         '--sheet-radius': _props.radius,
+         '--sheet-slider-icon-color': _props.sliderIconColor,
+      }));
+
       return () => {
          return h(
             'div',
@@ -189,22 +271,35 @@ const SheetContainer = defineComponent({
                      shouldClose.value = true;
                   }
                },
-               style: {
-                  '--sheet-container-color': 'rgba(0,0,0,0.5)',
-               },
+               style: style.value,
                class: `${shouldClose.value ? 'anim-out' : ''}`,
             },
             [
                h(
                   SheetItem,
                   {
-                     ...attrs,
+                     ...props.shiftAttrs,
+                     containerColor: _props.containerColor,
+                     height: _props.height,
+                     maxHeight: _props.maxHeight,
+                     maxWidth: _props.maxWidth,
+                     minHeight: _props.minHeight,
+                     radius: _props.radius,
+                     sheetColor: _props.sheetColor,
+                     sliderIconColor: _props.sliderIconColor,
+                     slideIcon: _props.slideIcon,
+                     threshold: _props.threshold,
+
+                     shouldClose: shouldClose.value,
                      onHide: () => {
                         emit('closeSheet');
                      },
-                     onCloseStart: () => (shouldClose.value = true),
+                     onCloseStart: () => {
+                        if (canClose.value) {
+                           shouldClose.value = true;
+                        }
+                     },
                      onCanClose: () => (canClose.value = true),
-                     shouldClose: shouldClose.value,
                   },
                   {
                      default: slots.default,
@@ -223,20 +318,43 @@ export const Sheet = defineComponent({
          type: Boolean as PropType<boolean>,
          required: true,
       },
+      ...options,
    },
    emits: {
-      'update:Visible': (value: boolean) => true,
+      'update:visible': (value: boolean) => true,
    },
    setup(props, { emit, slots, attrs }) {
+      const shouldWrapperClose = ref(false);
+      const shouldBeVisible = ref(false);
+
+      provide(injectKey, props);
+
+      watch(
+         () => props.visible,
+         v => {
+            if (v) {
+               shouldBeVisible.value = true;
+               shouldWrapperClose.value = false;
+            } else {
+               shouldWrapperClose.value = true;
+            }
+         },
+         {
+            immediate: true,
+         }
+      );
       return () => {
-         if (!props.visible) return undefined;
+         if (!props.visible && !shouldBeVisible.value) return undefined;
 
          return h(
             SheetContainer,
             {
-               visible: props.visible,
-               onCloseSheet: () => emit('update:Visible', false),
-               ...attrs,
+               onCloseSheet: () => {
+                  shouldBeVisible.value = false;
+                  emit('update:visible', false);
+               },
+               shouldWrapperClose: shouldWrapperClose.value,
+               shiftAttrs: { ...attrs },
             },
             {
                default: slots.default,

@@ -9,5 +9,9 @@
    "license": "MIT",
    "dependencies": {
       "vue": "next"
-   }
+   },
+   "files": [
+      "index.js",
+      "css"
+   ]
 }

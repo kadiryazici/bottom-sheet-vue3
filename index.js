@@ -1,3 +1,4 @@
+'use strict';
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -9,10 +10,51 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { defineComponent, h, ref, onMounted, computed, watch, } from 'vue';
-var SheetHead = h('div', {
-    "class": 'vier-sheet-head'
-}, [h('div', { "class": 'vier-head-icon' })]);
+import { defineComponent, h, ref, onMounted, computed, watch, createVNode, provide, inject, } from 'vue';
+var defaultSlideIcon = createVNode('div', { "class": 'vier-head-icon' });
+var injectKey = Symbol();
+var options = {
+    minHeight: {
+        "default": 'auto',
+        type: String
+    },
+    maxWidth: {
+        "default": '500px',
+        type: String
+    },
+    maxHeight: {
+        "default": '90%',
+        type: String
+    },
+    height: {
+        "default": 'auto',
+        type: String
+    },
+    slideIcon: {
+        "default": defaultSlideIcon,
+        type: null
+    },
+    containerColor: {
+        "default": 'rgba(0,0,0,.5)',
+        type: String
+    },
+    sheetColor: {
+        "default": '#fff',
+        type: String
+    },
+    sliderIconColor: {
+        "default": 'rgba(0, 0, 0, 0.416)',
+        type: String
+    },
+    radius: {
+        "default": '25px',
+        type: String
+    },
+    threshold: {
+        type: Number,
+        "default": 25
+    }
+};
 var SheetItem = defineComponent({
     name: 'VierSheetItem',
     emits: {
@@ -102,11 +144,10 @@ var SheetItem = defineComponent({
                 closeSheet();
             }
         });
+        var _props = inject(injectKey);
         function onTouchMouseUp(e) {
             e.preventDefault();
-            if (yTotal.value > 175) {
-                // console.log(sheetBeginningTop.value);
-                // closeSheet();
+            if (yTotal.value >= _props.threshold) {
                 emit('closeStart');
             }
             else {
@@ -126,11 +167,12 @@ var SheetItem = defineComponent({
                 ref: sheet,
                 style: style.value
             }, [
-                h(SheetHead, {
+                h('div', {
+                    "class": 'vier-sheet-head',
                     ref: sheetHead,
                     onMousedown: onTouchMouseDown,
                     onTouchstart: onTouchMouseDown
-                }),
+                }, [_props.slideIcon]),
                 h('div', { "class": 'vier-sheet-body' }, {
                     "default": slots["default"]
                 }),
@@ -145,15 +187,33 @@ var SheetContainer = defineComponent({
         closeSheet: function () { return true; }
     },
     props: {
-        visible: {
-            type: Boolean,
-            required: true
+        shiftAttrs: {
+            type: Object
+        },
+        shouldWrapperClose: {
+            type: Boolean
         }
     },
     setup: function (props, _a) {
         var attrs = _a.attrs, slots = _a.slots, emit = _a.emit;
         var shouldClose = ref(false);
         var canClose = ref(false);
+        watch(function () { return props.shouldWrapperClose; }, function (v) {
+            if (v) {
+                shouldClose.value = true;
+            }
+        });
+        var _props = inject(injectKey);
+        var style = computed(function () { return ({
+            '--container-color': _props.containerColor,
+            '--sheet-color': _props.sheetColor,
+            '--sheet-height': _props.height,
+            '--sheet-max-height': _props.maxHeight,
+            '--sheet-max-width': _props.maxWidth,
+            '--sheet-min-height': _props.minHeight,
+            '--sheet-radius': _props.radius,
+            '--sheet-slider-icon-color': _props.sliderIconColor
+        }); });
         return function () {
             return h('div', {
                 id: 'vier-sheet-container',
@@ -164,14 +224,16 @@ var SheetContainer = defineComponent({
                         shouldClose.value = true;
                     }
                 },
-                style: {
-                    '--sheet-container-color': 'rgba(0,0,0,0.5)'
-                },
+                style: style.value,
                 "class": "" + (shouldClose.value ? 'anim-out' : '')
             }, [
-                h(SheetItem, __assign(__assign({}, attrs), { onHide: function () {
+                h(SheetItem, __assign(__assign({}, props.shiftAttrs), { containerColor: _props.containerColor, height: _props.height, maxHeight: _props.maxHeight, maxWidth: _props.maxWidth, minHeight: _props.minHeight, radius: _props.radius, sheetColor: _props.sheetColor, sliderIconColor: _props.sliderIconColor, slideIcon: _props.slideIcon, threshold: _props.threshold, shouldClose: shouldClose.value, onHide: function () {
                         emit('closeSheet');
-                    }, onCloseStart: function () { return (shouldClose.value = true); }, onCanClose: function () { return (canClose.value = true); }, shouldClose: shouldClose.value }), {
+                    }, onCloseStart: function () {
+                        if (canClose.value) {
+                            shouldClose.value = true;
+                        }
+                    }, onCanClose: function () { return (canClose.value = true); } }), {
                     "default": slots["default"]
                 }),
             ]);
@@ -180,21 +242,40 @@ var SheetContainer = defineComponent({
 });
 export var Sheet = defineComponent({
     name: 'VierSheet',
-    props: {
-        visible: {
+    props: __assign({ visible: {
             type: Boolean,
             required: true
-        }
-    },
+        } }, options),
     emits: {
-        'update:Visible': function (value) { return true; }
+        'update:visible': function (value) { return true; }
     },
     setup: function (props, _a) {
         var emit = _a.emit, slots = _a.slots, attrs = _a.attrs;
+        var shouldWrapperClose = ref(false);
+        var shouldBeVisible = ref(false);
+        provide(injectKey, props);
+        watch(function () { return props.visible; }, function (v) {
+            if (v) {
+                shouldBeVisible.value = true;
+                shouldWrapperClose.value = false;
+            }
+            else {
+                shouldWrapperClose.value = true;
+            }
+        }, {
+            immediate: true
+        });
         return function () {
-            if (!props.visible)
+            if (!props.visible && !shouldBeVisible.value)
                 return undefined;
-            return h(SheetContainer, __assign({ visible: props.visible, onCloseSheet: function () { return emit('update:Visible', false); } }, attrs), {
+            return h(SheetContainer, {
+                onCloseSheet: function () {
+                    shouldBeVisible.value = false;
+                    emit('update:visible', false);
+                },
+                shouldWrapperClose: shouldWrapperClose.value,
+                shiftAttrs: __assign({}, attrs)
+            }, {
                 "default": slots["default"]
             });
         };
