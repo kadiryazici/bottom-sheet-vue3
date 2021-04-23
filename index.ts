@@ -9,10 +9,11 @@ import {
    computed,
    watch,
    createVNode,
-   isVNode,
    provide,
    InjectionKey,
    inject,
+   watchEffect,
+   Teleport
 } from 'vue';
 
 const defaultSlideIcon = createVNode('div', { class: 'vier-head-icon' });
@@ -34,58 +35,58 @@ interface Props<S = string, N = number> {
 const options = {
    minHeight: {
       default: 'auto',
-      type: String as PropType<string>,
+      type: String as PropType<string>
    },
    maxWidth: {
       default: '500px',
-      type: String as PropType<string>,
+      type: String as PropType<string>
    },
    maxHeight: {
       default: '90%',
-      type: String as PropType<string>,
+      type: String as PropType<string>
    },
    height: {
       default: 'auto',
-      type: String as PropType<string>,
+      type: String as PropType<string>
    },
    slideIcon: {
       default: defaultSlideIcon,
-      type: null,
+      type: null
    },
    containerColor: {
       default: 'rgba(0,0,0,.5)',
-      type: String as PropType<string>,
+      type: String as PropType<string>
    },
    sheetColor: {
       default: '#fff',
-      type: String as PropType<string>,
+      type: String as PropType<string>
    },
    sliderIconColor: {
       default: 'rgba(0, 0, 0, 0.416)',
-      type: String as PropType<string>,
+      type: String as PropType<string>
    },
    radius: {
       default: '25px',
-      type: String as PropType<string>,
+      type: String as PropType<string>
    },
    threshold: {
       type: Number as PropType<number>,
-      default: 25,
-   },
+      default: 25
+   }
 };
 
 const SheetItem = defineComponent({
    name: 'VierSheetItem',
    emits: {
-      hide: null,
+      destroy: null,
       closeStart: null,
-      canClose: null,
+      canClose: null
    },
    props: {
       shouldClose: {
          type: Boolean as PropType<boolean>,
-         default: false,
-      },
+         default: false
+      }
    },
    setup(props, { slots, emit }) {
       const sheet = ref<HTMLElement | null>(null);
@@ -114,7 +115,7 @@ const SheetItem = defineComponent({
       const transition = ref('none');
       const style = computed(() => ({
          transform: `translateY(${transformY.value}px)`,
-         transition: transition.value,
+         transition: transition.value
       }));
 
       function onTouchMouseDown(e: MouseEvent | TouchEvent) {
@@ -129,10 +130,10 @@ const SheetItem = defineComponent({
             yStart.value = e.touches[0].clientY;
          }
          window.addEventListener('mousemove', onTouchMouseMove, {
-            passive: false,
+            passive: false
          });
          window.addEventListener('touchmove', onTouchMouseMove, {
-            passive: false,
+            passive: false
          });
          window.addEventListener('mouseup', onTouchMouseUp);
          window.addEventListener('touchend', onTouchMouseUp);
@@ -153,18 +154,19 @@ const SheetItem = defineComponent({
 
       function closeSheet() {
          const windowBottom = window.innerHeight;
-         const targetPixel =
-            sheetBeginningTop.value +
-            (windowBottom - sheetBeginningTop.value + 25);
+         const targetPixel = sheetBeginningTop.value + (windowBottom - sheetBeginningTop.value + 25);
          transformY.value = targetPixel;
          transition.value = transitionValue;
 
          if (sheet.value) {
             sheet.value.addEventListener('transitionend', () => {
-               emit('hide');
+               // when close animation is over it is time to destroy component
+               emit('destroy');
             });
          }
       }
+
+      // watch shouldClose value. If it is true this means Sheet should start close animation.
       watch(
          () => props.shouldClose,
          newValue => {
@@ -197,7 +199,7 @@ const SheetItem = defineComponent({
             {
                class: 'vier-sheet',
                ref: sheet,
-               style: style.value,
+               style: style.value
             },
             [
                h(
@@ -206,35 +208,37 @@ const SheetItem = defineComponent({
                      class: 'vier-sheet-head',
                      ref: sheetHead,
                      onMousedown: onTouchMouseDown,
-                     onTouchstart: onTouchMouseDown,
+                     onTouchstart: onTouchMouseDown
                   },
                   [_props.slideIcon]
                ),
                h(
                   'div',
-                  { class: 'vier-sheet-body' },
                   {
-                     default: slots.default,
-                  }
-               ),
+                     class: 'vier-sheet-body'
+                  },
+                  slots.default!({
+                     closeSelf: () => emit('closeStart')
+                  })
+               )
             ]
          );
-   },
+   }
 });
 
 const SheetContainer = defineComponent({
    name: 'VierSheetContainer',
    inheritAttrs: false,
    emits: {
-      closeSheet: () => true,
+      closeSheet: () => true
    },
    props: {
       shiftAttrs: {
-         type: Object as PropType<Object>,
+         type: Object as PropType<Object>
       },
       shouldWrapperClose: {
-         type: Boolean as PropType<boolean>,
-      },
+         type: Boolean as PropType<boolean>
+      }
    },
 
    setup(props, { attrs, slots, emit }) {
@@ -257,7 +261,7 @@ const SheetContainer = defineComponent({
          '--sheet-max-width': _props.maxWidth,
          '--sheet-min-height': _props.minHeight,
          '--sheet-radius': _props.radius,
-         '--sheet-slider-icon-color': _props.sliderIconColor,
+         '--sheet-slider-icon-color': _props.sliderIconColor
       }));
 
       return () => {
@@ -272,7 +276,7 @@ const SheetContainer = defineComponent({
                   }
                },
                style: style.value,
-               class: `${shouldClose.value ? 'anim-out' : ''}`,
+               class: `${shouldClose.value ? 'anim-out' : ''}`
             },
             [
                h(
@@ -281,7 +285,7 @@ const SheetContainer = defineComponent({
                      ...props.shiftAttrs,
 
                      shouldClose: shouldClose.value,
-                     onHide: () => {
+                     onDestroy: () => {
                         emit('closeSheet');
                      },
                      onCloseStart: () => {
@@ -289,16 +293,14 @@ const SheetContainer = defineComponent({
                            shouldClose.value = true;
                         }
                      },
-                     onCanClose: () => (canClose.value = true),
+                     onCanClose: () => (canClose.value = true)
                   },
-                  {
-                     default: slots.default,
-                  }
-               ),
+                  { default: slots.default }
+               )
             ]
          );
       };
-   },
+   }
 });
 
 export const Sheet = defineComponent({
@@ -306,12 +308,12 @@ export const Sheet = defineComponent({
    props: {
       visible: {
          type: Boolean as PropType<boolean>,
-         required: true,
+         required: true
       },
-      ...options,
+      ...options
    },
    emits: {
-      'update:visible': (value: boolean) => true,
+      'update:visible': (value: boolean) => true
    },
    setup(props, { emit, slots, attrs }) {
       const shouldWrapperClose = ref(false);
@@ -319,37 +321,39 @@ export const Sheet = defineComponent({
 
       provide(injectKey, props);
 
-      watch(
-         () => props.visible,
-         v => {
-            if (v) {
-               shouldBeVisible.value = true;
-               shouldWrapperClose.value = false;
-            } else {
-               shouldWrapperClose.value = true;
-            }
-         },
-         {
-            immediate: true,
+      watchEffect(() => {
+         if (props.visible) {
+            shouldBeVisible.value = true;
+            shouldWrapperClose.value = false;
+         } else {
+            shouldWrapperClose.value = true;
          }
-      );
+      });
       return () => {
          if (!props.visible && !shouldBeVisible.value) return undefined;
 
          return h(
-            SheetContainer,
+            Teleport,
             {
-               onCloseSheet: () => {
-                  shouldBeVisible.value = false;
-                  emit('update:visible', false);
-               },
-               shouldWrapperClose: shouldWrapperClose.value,
-               shiftAttrs: { ...attrs },
+               to: 'body'
             },
-            {
-               default: slots.default,
-            }
+            [
+               h(
+                  SheetContainer,
+                  {
+                     onCloseSheet: () => {
+                        shouldBeVisible.value = false;
+                        emit('update:visible', false);
+                     },
+                     shouldWrapperClose: shouldWrapperClose.value,
+                     shiftAttrs: { ...attrs }
+                  },
+                  {
+                     default: slots.default
+                  }
+               )
+            ]
          );
       };
-   },
+   }
 });

@@ -2,6 +2,8 @@
    position: fixed;
    width: 100%;
    height: 100%;
+   left: 0;
+   top: 0;
    max-height: -webkit-fill-available;
    max-height: -moz-available;
    max-height: fill-available;
@@ -9,15 +11,20 @@
    display: flex;
    justify-content: center;
    align-items: flex-end;
+   transition: background-color 0.35s;
+}
+
+#vier-sheet-container:last-child {
    background-color: var(--container-color);
 }
 
-#vier-sheet-container:not(.anim-out) {
+/* body #vier-sheet-container:last-of-type:not(.anim-out) {
    animation: vier-backgroundIn 0.35s;
-}
+} */
 
-#vier-sheet-container.anim-out {
-   animation: vier-backgroundOut 0.35s forwards !important;
+#vier-sheet-container.anim-out:last-child {
+   /* animation: vier-backgroundOut 0.35s forwards !important; */
+   background-color: transparent;
 }
 
 #vier-sheet-container > .vier-sheet {
