@@ -15,7 +15,7 @@ var defaultSlideIcon = createVNode('div', { "class": 'vier-head-icon' });
 var injectKey = Symbol();
 var options = {
     minHeight: {
-        "default": 'auto',
+        "default": '250px',
         type: String
     },
     maxWidth: {
@@ -180,9 +180,11 @@ var SheetItem = defineComponent({
                 }, [_props.slideIcon]),
                 h('div', {
                     "class": 'vier-sheet-body'
-                }, slots["default"]({
-                    closeSelf: function () { return emit('closeStart'); }
-                }))
+                }, !slots["default"]
+                    ? undefined
+                    : slots["default"]({
+                        closeSelf: function () { return emit('closeStart'); }
+                    }))
             ]);
         };
     }
@@ -221,14 +223,20 @@ var SheetContainer = defineComponent({
             '--sheet-radius': _props.radius,
             '--sheet-slider-icon-color': _props.sliderIconColor
         }); });
+        var mousedown = ref(null);
+        var mouseup = ref(null);
         return function () {
             return h('div', {
                 id: 'vier-sheet-container',
-                onClick: function (event) {
-                    if (canClose.value && _props.clickOutside) {
-                        if (event.target !== event.currentTarget)
-                            return;
+                onMouseup: function (event) {
+                    mouseup.value = event.currentTarget;
+                    if (canClose.value && _props.clickOutside && mousedown.value === mouseup.value) {
                         shouldClose.value = true;
+                    }
+                },
+                onMousedown: function (e) {
+                    if (e.target) {
+                        mousedown.value = e.target;
                     }
                 },
                 style: style.value,

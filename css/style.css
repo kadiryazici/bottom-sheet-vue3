@@ -14,12 +14,7 @@
    transition: 0.35s background-color;
 }
 
-#vier-sheet-container:last-of-type {
-   background-color: var(--container-color);
-   animation: vier-backgroundIn 0.35s;
-}
-
-#vier-sheet-container:last-of-type {
+div#vier-sheet-container:last-of-type {
    background-color: var(--container-color);
    animation: vier-backgroundIn 0.35s;
 }

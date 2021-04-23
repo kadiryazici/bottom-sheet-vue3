@@ -30,12 +30,12 @@ interface Props<S = string, N = number> {
    sliderIconColor: S;
    threshold: N;
    radius: S;
-   clickOutside: Boolean;
+   clickOutside: boolean;
 }
 
 const options = {
    minHeight: {
-      default: 'auto',
+      default: '250px',
       type: String as PropType<string>
    },
    maxWidth: {
@@ -222,9 +222,11 @@ const SheetItem = defineComponent({
                   {
                      class: 'vier-sheet-body'
                   },
-                  slots.default!({
-                     closeSelf: () => emit('closeStart')
-                  })
+                  !slots.default
+                     ? undefined
+                     : slots.default({
+                          closeSelf: () => emit('closeStart')
+                       })
                )
             ]
          );
@@ -269,15 +271,22 @@ const SheetContainer = defineComponent({
          '--sheet-slider-icon-color': _props.sliderIconColor
       }));
 
+      const mousedown = ref<HTMLElement | null>(null);
+      const mouseup = ref<HTMLElement | null>(null);
       return () => {
          return h(
             'div',
             {
                id: 'vier-sheet-container',
-               onClick: (event: MouseEvent) => {
-                  if (canClose.value && _props.clickOutside) {
-                     if (event.target !== event.currentTarget) return;
+               onMouseup: (event: MouseEvent) => {
+                  mouseup.value = event.currentTarget as HTMLElement;
+                  if (canClose.value && _props.clickOutside && mousedown.value === mouseup.value) {
                      shouldClose.value = true;
+                  }
+               },
+               onMousedown: (e: Event) => {
+                  if (e.target) {
+                     mousedown.value = e.target as HTMLElement;
                   }
                },
                style: style.value,
