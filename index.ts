@@ -126,12 +126,9 @@ const SheetItem = defineComponent({
       function onTouchMouseDown(e: MouseEvent | TouchEvent) {
          e.preventDefault();
          transition.value = 'none';
-
-         const iOfTouch = e instanceof TouchEvent;
-         const iOfWTouch = e instanceof window.TouchEvent;
          if (e instanceof window.MouseEvent || e instanceof MouseEvent) {
             yStart.value = e.clientY;
-         } else if (iOfTouch || iOfWTouch) {
+         } else {
             yStart.value = e.touches[0].clientY;
          }
          window.addEventListener('mousemove', onTouchMouseMove, {
@@ -146,12 +143,10 @@ const SheetItem = defineComponent({
 
       function onTouchMouseMove(e: MouseEvent | TouchEvent) {
          e.preventDefault();
-         const iOfTouch = e instanceof TouchEvent;
-         const iOfWTouch = e instanceof window.TouchEvent;
          if (e instanceof window.MouseEvent || e instanceof MouseEvent) {
             yTotal.value = Math.max(0, e.clientY - yStart.value);
             transformY.value = yTotal.value;
-         } else if (iOfWTouch || iOfTouch) {
+         } else {
             yTotal.value = Math.max(0, e.touches[0].clientY - yStart.value);
             transformY.value = yTotal.value;
          }
@@ -275,7 +270,7 @@ const SheetContainer = defineComponent({
       const mouseup = ref<HTMLElement | null>(null);
       return () => {
          return h(
-            'div',
+            'i',
             {
                id: 'vier-sheet-container',
                onMouseup: (event: MouseEvent) => {

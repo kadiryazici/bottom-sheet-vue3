@@ -12,9 +12,11 @@
    justify-content: center;
    align-items: flex-end;
    transition: 0.35s background-color;
+   text-decoration: none;
+   font-style: normal;
 }
 
-div#vier-sheet-container:last-of-type {
+#vier-sheet-container:last-of-type {
    background-color: var(--container-color);
    animation: vier-backgroundIn 0.35s;
 }
