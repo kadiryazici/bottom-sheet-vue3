@@ -52,7 +52,7 @@ var options = {
     },
     threshold: {
         type: Number,
-        "default": 25
+        "default": 50
     },
     clickOutside: {
         type: Boolean,
@@ -161,7 +161,6 @@ var SheetItem = defineComponent({
             e.preventDefault();
             if (yTotal.value >= _props.threshold) {
                 emit('closeStart');
-                document.body.style.setProperty('overflow', 'auto');
             }
             else {
                 transformY.value = 0;

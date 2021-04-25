@@ -72,7 +72,7 @@ const options = {
    },
    threshold: {
       type: Number as PropType<number>,
-      default: 25
+      default: 50
    },
    clickOutside: {
       type: Boolean as PropType<boolean>,
