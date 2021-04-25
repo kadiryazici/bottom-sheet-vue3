@@ -8,10 +8,6 @@
    "author": "kadiryazici",
    "license": "MIT",
    "dependencies": {
-      "vue": "next"
-   },
-   "files": [
-      "index.js",
-      "css"
-   ]
+      "vue": "^3.0.11"
+   }
 }

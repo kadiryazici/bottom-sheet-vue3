@@ -11,9 +11,10 @@
    height: 100%;
    left: 0;
    top: 0;
-   max-height: -webkit-fill-available;
-   max-height: -moz-available;
-   max-height: fill-available;
+   /* max-height: -webkit-fill-available; */
+   /* max-height: -moz-available; */
+   /* max-height: fill-available; */
+   touch-action: none;
    z-index: 99999;
    display: -webkit-box;
    display: -ms-flexbox;
@@ -65,9 +66,23 @@
    -webkit-box-direction: normal;
    -ms-flex-flow: column nowrap;
    flex-flow: column nowrap;
-   overflow: hidden;
+   /* overflow: hidden; */
    -webkit-animation: vier-slideIn 0.35s ease;
    animation: vier-slideIn 0.35s ease;
+}
+
+#vier-sheet-container > .vier-sheet::after {
+   position: absolute;
+   content: '';
+   display: block;
+   left: 0;
+   right: 0;
+   z-index: -1;
+   top: 99%;
+   height: 101vh;
+   background-color: var(--sheet-color);
+   width: 100%;
+   max-width: var(--sheet-max-width);
 }
 
 #vier-sheet-container > .vier-sheet > .vier-sheet-head {
@@ -76,6 +91,8 @@
    display: -webkit-box;
    display: -ms-flexbox;
    display: flex;
+   z-index: 10;
+   touch-action: manipulation;
    -webkit-box-pack: center;
    -ms-flex-pack: center;
    justify-content: center;
@@ -97,8 +114,20 @@
 
 #vier-sheet-container > .vier-sheet > .vier-sheet-body {
    width: 100%;
-   height: 100%;
-   overflow: auto;
+   height: calc(100% + var(--sheet-flexing-top));
+   flex-shrink: var(--sheet-body-shrink);
+   overflow-y: auto;
+   scrollbar-width: thin;
+   z-index: 5;
+   scrollbar-color: rgba(129, 129, 129, 60%) transparent;
+}
+
+#vier-sheet-container > .vier-sheet > .vier-sheet-body::-webkit-scrollbar {
+   width: 5px;
+}
+#vier-sheet-container > .vier-sheet > .vier-sheet-body::-webkit-scrollbar-thumb {
+   background-color: rgba(129, 129, 129, 60%);
+   border-radius: 15px;
 }
 
 @-webkit-keyframes vier-slideIn {

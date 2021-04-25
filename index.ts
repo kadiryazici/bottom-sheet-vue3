@@ -118,9 +118,22 @@ const SheetItem = defineComponent({
       const transformY = ref(0);
       const transitionValue = 'transform .35s';
       const transition = ref('none');
+
+      const shrink = ref(1);
+
+      watch(transformY, v => {
+         if (v < 0) {
+            shrink.value = 0;
+         } else {
+            shrink.value = 1;
+         }
+      });
+
       const style = computed(() => ({
          transform: `translateY(${transformY.value}px)`,
-         transition: transition.value
+         transition: transition.value,
+         // '--sheet-body-shrink': shrink.value,
+         '--sheet-flexing-top': Math.min(0, transformY.value) + 'px'
       }));
 
       function onTouchMouseDown(e: MouseEvent | TouchEvent) {
@@ -144,10 +157,10 @@ const SheetItem = defineComponent({
       function onTouchMouseMove(e: MouseEvent | TouchEvent) {
          e.preventDefault();
          if (e instanceof window.MouseEvent || e instanceof MouseEvent) {
-            yTotal.value = Math.max(0, e.clientY - yStart.value);
+            yTotal.value = /*Math.max(0,*/ e.clientY - yStart.value; /*);*/
             transformY.value = yTotal.value;
          } else {
-            yTotal.value = Math.max(0, e.touches[0].clientY - yStart.value);
+            yTotal.value = /*Math.max(0,*/ e.touches[0].clientY - yStart.value; /*);*/
             transformY.value = yTotal.value;
          }
       }
@@ -181,6 +194,7 @@ const SheetItem = defineComponent({
          e.preventDefault();
          if (yTotal.value >= _props.threshold) {
             emit('closeStart');
+            document.body.style.setProperty('overflow', 'auto');
          } else {
             transformY.value = 0;
             transition.value = transitionValue;
@@ -266,6 +280,19 @@ const SheetContainer = defineComponent({
          '--sheet-slider-icon-color': _props.sliderIconColor
       }));
 
+      function pointerUp(e: Event, touch: 'touch' | 'mouse') {
+         mouseup.value = e.currentTarget as HTMLElement;
+         if (canClose.value && _props.clickOutside && mousedown.value === mouseup.value) {
+            shouldClose.value = true;
+         }
+      }
+
+      function pointerDown(e: Event, touch: 'touch' | 'mouse') {
+         if (e.target) {
+            mousedown.value = e.target as HTMLElement;
+         }
+      }
+
       const mousedown = ref<HTMLElement | null>(null);
       const mouseup = ref<HTMLElement | null>(null);
       return () => {
@@ -273,17 +300,10 @@ const SheetContainer = defineComponent({
             'i',
             {
                id: 'vier-sheet-container',
-               onMouseup: (event: MouseEvent) => {
-                  mouseup.value = event.currentTarget as HTMLElement;
-                  if (canClose.value && _props.clickOutside && mousedown.value === mouseup.value) {
-                     shouldClose.value = true;
-                  }
-               },
-               onMousedown: (e: Event) => {
-                  if (e.target) {
-                     mousedown.value = e.target as HTMLElement;
-                  }
-               },
+               onMouseup: (e: Event) => pointerUp(e, 'mouse'),
+               onMousedown: (e: Event) => pointerDown(e, 'mouse'),
+               onTouchstart: (e: Event) => pointerDown(e, 'touch'),
+               onTouchend: (e: Event) => pointerUp(e, 'touch'),
                style: style.value,
                class: `${shouldClose.value ? 'vier-anim-out' : ''}`
             },
