@@ -5,13 +5,13 @@
       "esModuleInterop": true,
       "isolatedModules": true,
       "module": "ESNext",
-      "types": ["vite"],
+      "types": ["app/vite"],
       "allowJs": true,
       "moduleResolution": "Node",
       "allowSyntheticDefaultImports": true,
       "paths": {
-         "/*": ["./*"]
+         "/*": ["./app/*"]
       }
    },
-   "include": ["src/**/*"]
+   "include": ["app/src/**/*"]
 }
