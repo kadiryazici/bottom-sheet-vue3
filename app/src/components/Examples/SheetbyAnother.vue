@@ -43,7 +43,7 @@ ref: sampleCode = `\
 </template>
 
 <script setup>
-import { Sheet } from 'vue3-bottom-sheet';
+import { Sheet } from 'bottom-sheet-vue3';
 ref: isOpen = false;
 ref: isOtherOpen = false;
 <\/script>

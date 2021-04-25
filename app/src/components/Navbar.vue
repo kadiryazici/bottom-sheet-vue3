@@ -16,5 +16,5 @@ import Github from './Github.vue';
 
 ref: a = true;
 ref: repoLink = 'https://github.com/kadiryazici/bottom-sheet-vue3';
-ref: name = 'Vue3 Bottom Sheet';
+ref: name = 'Bottom Sheet Vue3';
 </script>
