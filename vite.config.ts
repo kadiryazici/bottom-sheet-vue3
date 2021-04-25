@@ -18,6 +18,7 @@ const config: UserConfig = {
          'highlight.js/lib/languages/typescript',
       ],
    },
+   outDir: './docs',
 };
 
 export default config;
