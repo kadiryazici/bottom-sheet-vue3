@@ -119,14 +119,14 @@
    overflow-y: auto;
    scrollbar-width: thin;
    z-index: 5;
-   scrollbar-color: rgba(129, 129, 129, 60%) transparent;
+   scrollbar-color: rgba(129, 129, 129, 0.6) transparent;
 }
 
 #vier-sheet-container > .vier-sheet > .vier-sheet-body::-webkit-scrollbar {
    width: 5px;
 }
 #vier-sheet-container > .vier-sheet > .vier-sheet-body::-webkit-scrollbar-thumb {
-   background-color: rgba(129, 129, 129, 60%);
+   background-color: rgba(129, 129, 129, 0.6);
    border-radius: 15px;
 }
 
