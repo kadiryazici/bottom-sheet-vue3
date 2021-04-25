@@ -1,6 +1,7 @@
 {
    "compilerOptions": {
-      "baseUrl": ".",
+      "baseUrl": "./",
+      "outDir": "./dist",
       "strict": true,
       "esModuleInterop": true,
       "module": "ES2020",

@@ -55,6 +55,7 @@ export declare const Sheet: import("vue").DefineComponent<{
 }> | undefined, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {
     'update:visible': (value: boolean) => true;
 }, string, import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<{
+    visible: boolean;
     minHeight: string;
     maxWidth: string;
     maxHeight: string;
@@ -66,7 +67,6 @@ export declare const Sheet: import("vue").DefineComponent<{
     radius: string;
     threshold: number;
     clickOutside: boolean;
-    visible: boolean;
 } & {}>, {
     minHeight: string;
     maxWidth: string;
