@@ -76,16 +76,16 @@ ref: usageCode = `\
 </template>
 
 <script setup>
-import { Sheet } from 'bottom-sheet-vue';
+import { Sheet } from 'bottom-sheet-vue3';
 
 ref: isOpen = false;
 <\/script>
 `;
 
 ref: npm = `\
-npm install bottom-sheet-vue --save
+npm install bottom-sheet-vue3 --save
 or
-yarn add bottom-sheet-vue
+yarn add bottom-sheet-vue3
 `;
 
 ref: importCSSCode = `\
@@ -93,6 +93,6 @@ ref: importCSSCode = `\
 import { createApp } from 'vue';
 import App from './App.vue';
 //import it
-import 'bottom-sheet-vue/css/style.css'
+import 'bottom-sheet-vue3/css/style.css'
 `;
 </script>
