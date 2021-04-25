@@ -1,0 +1,17 @@
+{
+   "compilerOptions": {
+      "baseUrl": ".",
+      "strict": true,
+      "esModuleInterop": true,
+      "isolatedModules": true,
+      "module": "ESNext",
+      "types": ["vite"],
+      "allowJs": true,
+      "moduleResolution": "Node",
+      "allowSyntheticDefaultImports": true,
+      "paths": {
+         "/*": ["./*"]
+      }
+   },
+   "include": ["src/**/*"]
+}
