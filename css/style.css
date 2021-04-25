@@ -114,8 +114,7 @@
 
 #vier-sheet-container > .vier-sheet > .vier-sheet-body {
    width: 100%;
-   height: calc(100% + var(--sheet-flexing-top));
-   flex-shrink: var(--sheet-body-shrink);
+   height: calc(100%);
    overflow-y: auto;
    scrollbar-width: thin;
    z-index: 5;
