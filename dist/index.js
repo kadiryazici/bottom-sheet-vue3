@@ -245,13 +245,12 @@ var SheetContainer = defineComponent({
         var mouseup = ref(null);
         return function () {
             return h('i', {
-                id: 'vier-sheet-container',
                 onMouseup: function (e) { return pointerUp(e, 'mouse'); },
                 onMousedown: function (e) { return pointerDown(e, 'mouse'); },
                 onTouchstart: function (e) { return pointerDown(e, 'touch'); },
                 onTouchend: function (e) { return pointerUp(e, 'touch'); },
                 style: style.value,
-                "class": "" + (shouldClose.value ? 'vier-anim-out' : '')
+                "class": ["" + (shouldClose.value ? 'vier-anim-out' : ''), 'vier-sheet-container']
             }, [
                 h(SheetItem, __assign(__assign({}, props.shiftAttrs), { shouldClose: shouldClose.value, onDestroy: function () {
                         emit('closeSheet');

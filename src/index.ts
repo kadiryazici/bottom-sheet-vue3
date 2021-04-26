@@ -298,13 +298,12 @@ const SheetContainer = defineComponent({
          return h(
             'i',
             {
-               id: 'vier-sheet-container',
                onMouseup: (e: Event) => pointerUp(e, 'mouse'),
                onMousedown: (e: Event) => pointerDown(e, 'mouse'),
                onTouchstart: (e: Event) => pointerDown(e, 'touch'),
                onTouchend: (e: Event) => pointerUp(e, 'touch'),
                style: style.value,
-               class: `${shouldClose.value ? 'vier-anim-out' : ''}`
+               class: [`${shouldClose.value ? 'vier-anim-out' : ''}`, 'vier-sheet-container']
             },
             [
                h(
