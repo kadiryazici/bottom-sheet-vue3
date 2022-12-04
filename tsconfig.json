@@ -1,14 +1,14 @@
 {
-   "compilerOptions": {
-      "baseUrl": "./",
-      "outDir": "./dist",
-      "strict": true,
-      "esModuleInterop": true,
-      "module": "ES2020",
-      "lib": ["dom", "ES2020"],
-      "moduleResolution": "Node",
-      "allowSyntheticDefaultImports": true,
-      "declaration": true,
-      "watch": true
-   }
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.config.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.vitest.json"
+    }
+  ]
 }
