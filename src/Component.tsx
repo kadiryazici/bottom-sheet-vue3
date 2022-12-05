@@ -29,6 +29,7 @@ const SheetRenderer = defineComponent({
     const swipedPixels = ref(0)
     const swipeStartY = ref(0)
 
+    let swipeStarted = false
     let preSwipeHeight = 0
 
     function syncHeight() {
@@ -46,7 +47,7 @@ const SheetRenderer = defineComponent({
     }
 
     function handleSwipe(e: MouseEvent | TouchEvent) {
-      if (!swiping.value)
+      if (!swipeStarted)
         return
 
       let clientY: number
@@ -56,6 +57,12 @@ const SheetRenderer = defineComponent({
       else
         clientY = e.clientY
 
+      if (clientY === swipeStartY.value) {
+        swiping.value = false
+        return
+      }
+
+      swiping.value = true
       swipedPixels.value = clientY - swipeStartY.value
       listenBackdropClick = false
 
@@ -78,11 +85,11 @@ const SheetRenderer = defineComponent({
         swipeStartY.value = e.clientY
       }
 
-      swiping.value = true
+      swipeStarted = true
     }
 
     function handleSwipeEnd() {
-      if (!swiping.value)
+      if (!swipeStarted)
         return
 
       if (swipedPixels.value >= props.threshold) {
@@ -100,7 +107,7 @@ const SheetRenderer = defineComponent({
             },
           )
 
-          anim.addEventListener('finish', () => {
+          anim?.addEventListener('finish', () => {
             element.value.style.removeProperty('height')
             element.value.style.removeProperty('max-height')
           })
@@ -110,6 +117,7 @@ const SheetRenderer = defineComponent({
       swiping.value = false
       swipeStartY.value = 0
       swipedPixels.value = 0
+      swipeStarted = false
     }
 
     const globalEvents = [
