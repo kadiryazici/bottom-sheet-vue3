@@ -1,3 +1,2 @@
-import { h } from 'vue'
-
-export const Sheet = () => h('div', null, 'to be continued...')
+export { Sheet } from './Component'
+export { createBottomSheet, useBottomSheet, type IOnSwipeContext, type IPluginContext } from './plugin'
