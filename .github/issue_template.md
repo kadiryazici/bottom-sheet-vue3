@@ -12,4 +12,4 @@
   - EXAMPLE: Hi my name is Cristiano Ronaldo
 
 **`Honorable Mention (Required):`** <!-- Just kidding optional or is it? -->
-  - TRUE ANSWER <!--Example-->: Matt Smith the true Doctor
+  - <!--Example-->: Matt Smith the true Doctor
