@@ -37,6 +37,7 @@ const SheetRenderer = defineComponent({
 
     function reset() {
       element.value?.style.removeProperty('height')
+      element.value?.style.removeProperty('max-height')
 
       preSwipeHeight = 0
       swiping.value = false
@@ -58,10 +59,14 @@ const SheetRenderer = defineComponent({
       swipedPixels.value = clientY - swipeStartY.value
       listenBackdropClick = false
 
-      if (swipedPixels.value < 0)
+      if (swipedPixels.value < 0) {
         element.value.style.setProperty('height', `${preSwipeHeight + Math.abs(swipedPixels.value)}px`)
-      else
+        element.value.style.setProperty('max-height', 'none')
+      }
+      else {
         element.value.style.removeProperty('height')
+        element.value.style.removeProperty('max-height')
+      }
     }
 
     function handleSwipeStart(e: MouseEvent | TouchEvent) {
@@ -87,13 +92,17 @@ const SheetRenderer = defineComponent({
         setTimeout(() => {
           listenBackdropClick = true
 
-          element.value?.animate([
-            { height: `${preSwipeHeight}px` },
-          ], {
-            duration: 200,
-            easing: 'ease',
-          }).addEventListener('finish', () => {
+          const anim = element.value?.animate(
+            [{ height: `${preSwipeHeight}px` }],
+            {
+              duration: 200,
+              easing: 'ease',
+            },
+          )
+
+          anim.addEventListener('finish', () => {
             element.value.style.removeProperty('height')
+            element.value.style.removeProperty('max-height')
           })
         })
       }
