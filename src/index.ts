@@ -1,2 +1,2 @@
 export { Sheet } from './Component'
-export { createBottomSheet, useBottomSheet, type IOnSwipeContext, type IPluginContext } from './plugin'
+export { createBottomSheet, useBottomSheet, type IPluginContext } from './plugin'

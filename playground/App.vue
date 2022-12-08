@@ -12,7 +12,9 @@ const second = ref(false)
   </button>
 
   <Sheet v-model:visible="visible">
-    Hey how are you
+    <p v-for="n in 15">
+      Hey how are you
+    </p>
 
     <button @click="(second = true)">
       Second

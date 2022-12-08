@@ -1,25 +1,37 @@
 /* eslint-disable vue/one-component-per-file */
 
-import { Teleport, Transition, defineComponent, onMounted, onUnmounted, ref, watch } from 'vue'
-import { BG_CLASS, SHEET_EMITS, SHEET_PROPS, STOP_ATTR } from './constants'
+import { type PropType, Teleport, Transition, defineComponent, onMounted, onUnmounted, ref, watch } from 'vue'
+import { SHEET_PROPS, STOP_ATTR } from './constants'
 import { useBottomSheet } from './plugin'
 import { withEventModifiers } from './utils'
 
 const SheetRenderer = defineComponent({
   name: 'SheetRenderer',
-  props: SHEET_PROPS,
-  emits: SHEET_EMITS,
+  props: {
+    ...SHEET_PROPS,
+    id: {
+      type: Number as PropType<number>,
+      required: true,
+    },
+  },
+  emits: {
+    updateElement: null! as (el: HTMLDivElement | null) => void,
+    close: null! as () => void,
+  },
   setup(props, { emit, slots }) {
+    const context = useBottomSheet()
+
     const element = ref<HTMLDivElement>(null!)
 
     onUnmounted(() => emit('updateElement', null))
 
     let listenBackdropClick = true
 
-    const handleClickBackdrop = withEventModifiers((e: MouseEvent) => {
+    const handleClickBackdrop = withEventModifiers(() => {
       if (
-        !listenBackdropClick
-        || (e.target instanceof HTMLElement && e.target.closest(`.${STOP_ATTR}`)))
+        props.noClickOutside
+        || !listenBackdropClick
+      )
         return
 
       emit('close')
@@ -66,7 +78,7 @@ const SheetRenderer = defineComponent({
       swipedPixels.value = clientY - swipeStartY.value
       listenBackdropClick = false
 
-      if (swipedPixels.value < 0) {
+      if (swipedPixels.value < 0 && !props.noStretch) {
         element.value.style.setProperty('height', `${preSwipeHeight + Math.abs(swipedPixels.value)}px`)
         element.value.style.setProperty('max-height', 'none')
       }
@@ -77,6 +89,9 @@ const SheetRenderer = defineComponent({
     }
 
     function handleSwipeStart(e: MouseEvent | TouchEvent) {
+      if (e.target instanceof HTMLElement && e.target.closest(`[${STOP_ATTR}]`))
+        return
+
       if ('touches' in e) {
         swipeStartY.value = e.touches[0].clientY
         e.preventDefault()
@@ -120,34 +135,46 @@ const SheetRenderer = defineComponent({
       swipeStarted = false
     }
 
+    function handleHeaderSwipeStart(e: MouseEvent | TouchEvent) {
+      if (props.onlyHeaderSwipe)
+        handleSwipeStart(e)
+    }
+
+    function handleBackdropSwipeStart(e: MouseEvent | TouchEvent) {
+      if (!props.onlyHeaderSwipe)
+        handleSwipeStart(e)
+    }
+
     const globalEvents = [
       ['resize', reset],
       ['resize', syncHeight],
       ['mousemove', handleSwipe],
       ['mouseup', handleSwipeEnd],
+      ['touchend', handleSwipeEnd],
+      ['touchcancel', handleSwipeEnd],
       ['touchmove', handleSwipe],
-      ['touchstart', handleSwipeStart],
     ] as [keyof WindowEventMap, () => any][]
 
     onMounted(() => {
       syncHeight()
-      globalEvents.forEach(([name, fn]) => {
+
+      for (const [name, fn] of globalEvents)
         window.addEventListener(name, fn)
-      })
     })
 
     onUnmounted(() => {
-      globalEvents.forEach(([name, fn]) => {
+      for (const [name, fn] of globalEvents)
         window.removeEventListener(name, fn)
-      })
     })
 
     return () => (
       <div
-      class="bottom-sheet-backdrop"
-      onClick={handleClickBackdrop}
-      onMousedown={handleSwipeStart}
-      onTouchstart={handleSwipeStart}
+        class="bottom-sheet-backdrop"
+        data-sheet-active={props.id === context.activeSheet.value ? true : null}
+        draggable={false}
+        onClick={handleClickBackdrop}
+        onMousedown={handleBackdropSwipeStart}
+        onTouchstart={handleBackdropSwipeStart}
       >
         <div
           ref={element}
@@ -157,8 +184,18 @@ const SheetRenderer = defineComponent({
             transform: `translateY(${Math.max(swipedPixels.value, 0)}px)`,
           }}
         >
-          <div class="bottom-sheet-header">
-            <div class="bottom-sheet-header-bar" />
+          <div
+            onMousedown={handleHeaderSwipeStart}
+            onTouchstart={handleHeaderSwipeStart}
+            class="bottom-sheet-header"
+          >
+            {
+              slots.header
+                ? slots.header()
+                : (
+                <div class="bottom-sheet-header-bar" />
+                  )
+            }
           </div>
           <div class="bottom-sheet-body">
             {slots.default?.()}
@@ -186,19 +223,38 @@ export const Sheet = defineComponent({
     const context = useBottomSheet()
     const id = context.id()
 
+    let oldId = context.activeSheet.value
+
     watch(() => props.visible, (visible) => {
-      if (visible)
-        context.activeSheets.add(id)
-      else
-        context.activeSheets.delete(id)
+      if (visible) {
+        oldId = context.activeSheet.value
+        context.activeSheet.value = id
+      }
+      else {
+        context.activeSheet.value = oldId
+      }
     }, { immediate: true })
 
     function handleClose() {
       emit('update:visible', false)
     }
 
-    function handleAnimationEnter(el: Element, done: () => void) {
-      const anim = el.animate(
+    function handleAnimationEnter(backdrop: Element, done: () => void) {
+      const sheetEl = backdrop.querySelector('.bottom-sheet')!
+      const currentBackground = window.getComputedStyle(backdrop).backgroundColor
+
+      backdrop.animate(
+        [
+          { backgroundColor: 'rgba(0, 0, 0, 0)' },
+          { backgroundColor: currentBackground },
+        ],
+        {
+          duration: 300,
+          easing: 'ease',
+        },
+      )
+
+      const anim = sheetEl.animate(
         [
           { transform: 'translateY(100%)' },
           { transform: 'translateY(0%)' },
@@ -212,8 +268,18 @@ export const Sheet = defineComponent({
       anim.onfinish = done
     }
 
-    function handleAnimationLeave(el: Element, done: () => void) {
-      const anim = el.animate(
+    function handleAnimationLeave(backdrop: Element, done: () => void) {
+      const sheetEl = backdrop.querySelector('.bottom-sheet')!
+
+      backdrop.animate(
+        [{ backgroundColor: 'rgba(0, 0, 0, 0)' }],
+        {
+          duration: 300,
+          easing: 'ease',
+        },
+      )
+
+      const anim = sheetEl.animate(
         [
           { transform: 'translateY(100%)' },
         ],
@@ -226,8 +292,12 @@ export const Sheet = defineComponent({
       anim.onfinish = done
     }
 
+    onUnmounted(() => {
+      context.activeSheet.value = oldId
+    })
+
     return () => (
-      <Teleport to={`.${BG_CLASS}`}>
+      <Teleport to="body">
         <Transition
           css={false}
           onEnter={handleAnimationEnter}
@@ -235,10 +305,12 @@ export const Sheet = defineComponent({
         >
           { props.visible && (
             <SheetRenderer
-              {...props}
-              {...attrs}
+              id={id}
               v-slots={slots}
               onClose={handleClose}
+              {...props}
+              {...attrs}
+              visible={null}
             />
           )}
         </Transition>

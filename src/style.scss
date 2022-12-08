@@ -1,23 +1,3 @@
-.bottom-sheet-background {
-  width: 100%;
-  height: 100%;
-  z-index: var(--bottom-sheet-background-z-index, 9999);
-  position: fixed;
-  background-color: rgba(0, 0, 0, 0);
-  transition-property: background-color;
-  transition-duration: var(--bottom-sheet-background-transition-duration, 300ms);
-  transition-timing-function: ease;
-  display: flex;
-  left: 0;
-  top: 0;
-  pointer-events: none;
-  box-sizing: border-box;
-
-  &[data-background-active] {
-    background-color: var(--bottom-sheet-background-background-color, rgba(0, 0, 0, 0.2));
-  }
-}
-
 .bottom-sheet-backdrop {
   position: absolute;
   left: 0;
@@ -31,6 +11,11 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  transition: background-color 300ms ease;
+
+  &[data-sheet-active] {
+    background-color: var(--bottom-sheet-backdrop-background-color, rgba(0, 0, 0, 0.2))
+  }
 }
 
 .bottom-sheet {
@@ -39,11 +24,11 @@
   flex-direction: column;
   flex-wrap: nowrap;
   width: 100%;
-  max-width: var(--bottom-sheet-max-width, 400px);
+  max-width: var(--bottom-sheet-max-width, 500px);
   background-color: var(--bottom-sheet-bakground-color, #fff);
   min-height: var(--bottom-sheet-min-width, 40%);
   max-height: var(--bottom-sheet-max-height, 60%);
-  border-radius: var(--bottom-sheet-border-radius, 15px);
+  border-radius: var(--bottom-sheet-border-radius, 15px 15px 0px 0px);
   transition-property: transform;
   transition-duration: 200ms;
   transition-timing-function: ease;
@@ -59,17 +44,18 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: var(--bottom-sheet-header-height, 40px);
 
     &-bar {
-      width: 75%;
-      height: 10px;
-      background-color: var(--bottom-sheet-header-bar-background-color, rgb(44, 44, 44));
+      width: 30%;
+      height: 8px;
+      margin: 10px;
+      background-color: var(--bottom-sheet-header-bar-background-color, rgb(88, 88, 88));
       border-radius: var(--bottom-sheet-header-bar-border-radius, 10px);
     }
   }
 
   &-body {
     box-sizing: border-box;
+    overflow: auto;
   }
 }

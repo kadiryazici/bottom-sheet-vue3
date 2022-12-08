@@ -1,8 +1,11 @@
 import type { PropType } from 'vue'
 
 export const STOP_ATTR = 'data-bottom-sheet-stop'
-export const BG_ACTIVE_ATTR = 'data-background-active'
-export const BG_CLASS = 'bottom-sheet-background'
+
+const BOOL_FALSE = {
+  type: Boolean as PropType<boolean>,
+  default: false,
+} as const
 
 export const SHEET_PROPS = {
   /** Minimum pixel for minimum swipe duration to close sheet */
@@ -10,14 +13,10 @@ export const SHEET_PROPS = {
     type: Number as PropType<number>,
     default: 100,
   },
+  /** By default sheet listens swipe on screen, if this prop given it will listen only header */
+  onlyHeaderSwipe: BOOL_FALSE,
+  /** By default sheet stretches itself up on over swipe, this prop disables it */
+  noStretch: BOOL_FALSE,
   /** If given Sheet won't close itself on click outside */
-  noClickOutside: {
-    type: Boolean as PropType<boolean>,
-    default: false,
-  },
-} as const
-
-export const SHEET_EMITS = {
-  updateElement: null as unknown as (el: HTMLDivElement | null) => void,
-  close: null as unknown as () => void,
+  noClickOutside: BOOL_FALSE,
 } as const
