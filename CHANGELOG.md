@@ -1,8 +1,24 @@
 # 1.0.0
 ### Features
-  - TODO
+  - Added `noStretch` prop, this prop prevents stretching upwards on overswipe.
+
+  - Added `onlyHeaderSwipe` prop, if given swipe will be detected on header only.
 
 ### Breaking Changes
-  - Rewritten from scratch.
+  - Style props are removed `minHeight`, `height` and `radius` etc. now Sheet supports css parameters, use them to control sheet's styling. If you want you can direcly access classes and change them.
+    ### Supported variables:
+    - --bottom-sheet-backdrop-background-color
+    - --bottom-sheet-max-width
+    - --bottom-sheet-bakground-color
+    - --bottom-sheet-min-width
+    - --bottom-sheet-max-height
+    - --bottom-sheet-border-radius
+    - --bottom-sheet-header-bar-background-color
+    - --bottom-sheet-header-bar-border-radius
  
+  - `clickOutside` prop is changed to `noClickOutside` to support only-key-attribute.
+
+  - `slideIcon` attribute removed due to `header` slot.
+
+  - Now swipe detection includes whole screen, it was only header before.
 <br>
