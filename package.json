@@ -8,7 +8,9 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
-    }
+    },
+    "./package.json": "./package.json",
+    "./style.css": "./dist/style.css"
   },
   "license": "MIT",
   "repository": {

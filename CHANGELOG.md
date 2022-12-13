@@ -2,6 +2,8 @@
 ### Features
   - Added `noStretch` prop, this prop prevents stretching upwards on overswipe.
 
+  - Added `noHeader` prop to remove header element completely.
+
   - Added `onlyHeaderSwipe` prop, if given swipe will be detected on header only.
 
 ### Breaking Changes

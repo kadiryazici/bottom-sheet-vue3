@@ -8,7 +8,7 @@ const BOOL_FALSE = {
 } as const
 
 export const SHEET_PROPS = {
-  /** Minimum pixel for minimum swipe duration to close sheet */
+  /** Minimum swipe down pixel count for sheet to close itself */
   threshold: {
     type: Number as PropType<number>,
     default: 100,
@@ -19,4 +19,6 @@ export const SHEET_PROPS = {
   noStretch: BOOL_FALSE,
   /** If given Sheet won't close itself on click outside */
   noClickOutside: BOOL_FALSE,
+  /** Removes header section, ignores #header slot */
+  noHeader: BOOL_FALSE,
 } as const

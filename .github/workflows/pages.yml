@@ -3,8 +3,7 @@ name: Pages
 on:
   push:
     branches:
-      # - main 
-      - Momentos #Will Remove later
+      - main 
 
 jobs:
   publish:

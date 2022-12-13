@@ -170,7 +170,7 @@ const SheetRenderer = defineComponent({
     return () => (
       <div
         class="bottom-sheet-backdrop"
-        data-sheet-active={props.id === context.activeSheet.value ? true : null}
+        data-sheet-active={props.id === context.activeSheet.value ? '' : null}
         draggable={false}
         onClick={handleClickBackdrop}
         onMousedown={handleBackdropSwipeStart}
@@ -179,24 +179,28 @@ const SheetRenderer = defineComponent({
         <div
           ref={element}
           class="bottom-sheet"
-          data-swiping={swiping.value || null}
+          data-swiping={swiping.value ? '' : null}
           style={{
             transform: `translateY(${Math.max(swipedPixels.value, 0)}px)`,
           }}
         >
-          <div
-            onMousedown={handleHeaderSwipeStart}
-            onTouchstart={handleHeaderSwipeStart}
-            class="bottom-sheet-header"
-          >
-            {
-              slots.header
-                ? slots.header()
-                : (
-                <div class="bottom-sheet-header-bar" />
-                  )
-            }
-          </div>
+          {
+            props.noHeader
+              ? null
+              : (
+                  <div
+                    onMousedown={handleHeaderSwipeStart}
+                    onTouchstart={handleHeaderSwipeStart}
+                    class="bottom-sheet-header"
+                  >
+                    {
+                      slots.header
+                        ? slots.header()
+                        : <div class="bottom-sheet-header-bar" />
+                    }
+                  </div>
+                )
+          }
           <div class="bottom-sheet-body">
             {slots.default?.()}
           </div>
