@@ -21,4 +21,8 @@
   - `slideIcon` attribute removed due to `header` slot.
 
   - Now swipe detection includes whole screen, it was only header before.
+
+
+### Behavior Changes
+  - Now stretching upwards resizes the sheet instead of just a fake background.
 <br>
