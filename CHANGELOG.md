@@ -1,4 +1,4 @@
-# 1.0.0
+# 2.0.0
 ### Features
   - Added `noStretch` prop, this prop prevents stretching upwards on overswipe.
 
