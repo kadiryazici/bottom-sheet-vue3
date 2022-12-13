@@ -1,0 +1,61 @@
+.bottom-sheet-backdrop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  touch-action: pan-y;
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  transition: background-color 300ms ease;
+
+  &[data-sheet-active] {
+    background-color: var(--bottom-sheet-backdrop-background-color, rgba(0, 0, 0, 0.2))
+  }
+}
+
+.bottom-sheet {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  width: 100%;
+  max-width: var(--bottom-sheet-max-width, 500px);
+  background-color: var(--bottom-sheet-bakground-color, #fff);
+  min-height: var(--bottom-sheet-min-width, 40%);
+  max-height: var(--bottom-sheet-max-height, 60%);
+  border-radius: var(--bottom-sheet-border-radius, 15px 15px 0px 0px);
+  transition-property: transform;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+
+  &[data-swiping] {
+    transition-property: none !important;
+  } 
+
+  &-header {
+    box-sizing: border-box;
+    flex-shrink: 0;
+    flex-grow: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &-bar {
+      width: 30%;
+      height: 8px;
+      margin: 10px;
+      background-color: var(--bottom-sheet-header-bar-background-color, rgb(88, 88, 88));
+      border-radius: var(--bottom-sheet-header-bar-border-radius, 10px);
+    }
+  }
+
+  &-body {
+    box-sizing: border-box;
+    overflow: auto;
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.app.json",
+  "exclude": ["src/**/*", "playground/**/*"],
+  "compilerOptions": {
+    "composite": true,
+    "types": ["node"]
+  }
+}

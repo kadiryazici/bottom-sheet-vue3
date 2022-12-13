@@ -1,0 +1,9 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "include": ["env.d.ts", "src/**/*", "playground/**/*"],
+  "exclude": ["tests"],
+  "compilerOptions": {
+    "composite": true,
+    "noErrorTruncation": true
+  }
+}

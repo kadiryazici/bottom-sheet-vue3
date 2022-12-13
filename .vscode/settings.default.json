@@ -1,0 +1,15 @@
+// Copy these properties to your or `settings.json` or just rename this file.
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "volar.takeOverMode.enabled": "auto",
+  "eslint.format.enable": true,
+  "prettier.enable": false,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "volar.completion.preferredAttrNameCase": "camel",
+  "volar.completion.preferredTagNameCase": "pascal",
+  "files.eol": "\n"
+}
