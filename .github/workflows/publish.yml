@@ -1,16 +1,10 @@
 name: Publish
 
 on:
-  push:
-    branches:
-      # - main 
-      - Momentos #Will Remove later
-
-# on:
-#   workflow_run:
-#     workflows: ["Type Check"]
-#     types: [completed]
-#     branches: [main]
+  workflow_run:
+    workflows: ["Type Check"]
+    types: [completed]
+    branches: [main]
 
 jobs:
   publish:

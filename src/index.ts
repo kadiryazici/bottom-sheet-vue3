@@ -1,2 +1,3 @@
+import './style.scss'
 export { Sheet } from './Component'
-export { createBottomSheet, useBottomSheet, type IPluginContext } from './plugin'
+export { createBottomSheet, type IPluginContext } from './plugin'
