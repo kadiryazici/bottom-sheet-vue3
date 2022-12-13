@@ -1,3 +1,9 @@
+# 2.0.1
+
+- Added type support for new version.
+
+<br>
+
 # 2.0.0
 ### Features
   - Added `noStretch` prop, this prop prevents stretching upwards on overswipe.

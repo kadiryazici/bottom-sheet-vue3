@@ -312,9 +312,12 @@ export const Sheet = defineComponent({
               id={id}
               v-slots={slots}
               onClose={handleClose}
-              {...props}
               {...attrs}
-              visible={null}
+              noClickOutside={props.noClickOutside}
+              noHeader={props.noHeader}
+              noStretch={props.noStretch}
+              onlyHeaderSwipe={props.onlyHeaderSwipe}
+              threshold={props.threshold}
             />
           )}
         </Transition>
