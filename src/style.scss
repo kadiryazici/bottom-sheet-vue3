@@ -12,6 +12,7 @@
   align-items: flex-end;
   justify-content: center;
   transition: background-color 300ms ease;
+  overflow: hidden;
 
   &[data-sheet-active] {
     background-color: var(--bottom-sheet-backdrop-background-color, rgba(0, 0, 0, 0.2))

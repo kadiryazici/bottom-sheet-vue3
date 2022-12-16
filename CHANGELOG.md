@@ -1,3 +1,9 @@
+# 2.0.2
+
+- Added `overflow: hidden` style to `bottom-sheet-backdrop` to fix scroll bar issues.
+
+<br>
+
 # 2.0.1
 
 - Added type support for new version.
