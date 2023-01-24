@@ -304,8 +304,17 @@ export const Sheet = defineComponent({
       <Teleport to="body">
         <Transition
           css={false}
-          onEnter={handleAnimationEnter}
-          onLeave={handleAnimationLeave}
+          onEnter={
+            props.handleAnimationEnter !== undefined ?
+              props.handleAnimationEnter :
+              handleAnimationEnter 
+              
+          }
+          onLeave={
+            props.handleAnimationLeave !== undefined ?
+              props.handleAnimationLeave :
+              handleAnimationLeave
+          }
         >
           { props.visible && (
             <SheetRenderer

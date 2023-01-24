@@ -7,6 +7,11 @@ const BOOL_FALSE = {
   default: false,
 } as const
 
+const ANIMATION_CALLBACK = {
+  type: Function as PropType<(backdrop: Element, done: () => void) => void>,
+  default: undefined
+} as const
+
 export const SHEET_PROPS = {
   /** Minimum swipe down pixel count for sheet to close itself */
   threshold: {
@@ -21,4 +26,7 @@ export const SHEET_PROPS = {
   noClickOutside: BOOL_FALSE,
   /** Removes header section, ignores #header slot */
   noHeader: BOOL_FALSE,
+  /** Loads custom animations callback */
+  handleAnimationEnter: ANIMATION_CALLBACK,
+  handleAnimationLeave: ANIMATION_CALLBACK
 } as const
