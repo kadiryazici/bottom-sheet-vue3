@@ -64,10 +64,11 @@ const SheetRenderer = defineComponent({
 
       let clientY: number
 
-      if ('touches' in e)
+      if ('touches' in e) {
         clientY = e.touches[0].clientY
-      else
-        clientY = e.clientY
+        e.preventDefault()
+      }
+      else { clientY = e.clientY }
 
       if (clientY === swipeStartY.value) {
         swiping.value = false
@@ -92,13 +93,10 @@ const SheetRenderer = defineComponent({
       if (e.target instanceof HTMLElement && e.target.closest(`[${STOP_ATTR}]`))
         return
 
-      if ('touches' in e) {
+      if ('touches' in e)
         swipeStartY.value = e.touches[0].clientY
-        e.preventDefault()
-      }
-      else {
+      else
         swipeStartY.value = e.clientY
-      }
 
       swipeStarted = true
     }
@@ -152,14 +150,14 @@ const SheetRenderer = defineComponent({
       ['mouseup', handleSwipeEnd],
       ['touchend', handleSwipeEnd],
       ['touchcancel', handleSwipeEnd],
-      ['touchmove', handleSwipe],
-    ] as [keyof WindowEventMap, () => any][]
+      ['touchmove', handleSwipe, { passive: false }],
+    ] as [keyof WindowEventMap, () => any, AddEventListenerOptions?][]
 
     onMounted(() => {
       syncHeight()
 
-      for (const [name, fn] of globalEvents)
-        window.addEventListener(name, fn)
+      for (const [name, fn, options] of globalEvents)
+        window.addEventListener(name, fn, options)
     })
 
     onUnmounted(() => {
