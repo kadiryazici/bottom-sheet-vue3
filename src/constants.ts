@@ -27,6 +27,6 @@ export const SHEET_PROPS = {
   /** Removes header section, ignores #header slot */
   noHeader: BOOL_FALSE,
   /** Loads custom animations callback */
-  handleAnimationEnter: ANIMATION_CALLBACK,
-  handleAnimationLeave: ANIMATION_CALLBACK
+  onTransitionEnter: TRANSITION_CALLBACK,
+  onTransitionEnter: TRANSITION_CALLBACK
 } as const
