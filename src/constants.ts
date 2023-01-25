@@ -8,7 +8,7 @@ const BOOL_FALSE = {
 } as const
 
 const ANIMATION_CALLBACK = {
-  type: Function as PropType<(backdrop: Element, done: () => void) => void>,
+  type: Function as PropType<((element: Element, done: () => void) => void) | null | undefined>,
   default: undefined
 } as const
 
