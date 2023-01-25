@@ -307,12 +307,12 @@ export const Sheet = defineComponent({
           onEnter={
             props.handleAnimationEnter === null
               ? undefined
-               : props.handleAnimationEnter || handleAnimationEnter
+              : props.handleAnimationEnter || handleAnimationEnter
           }
           onLeave={
             props.handleAnimationLeave === null
-              ? undefined :
-              props.handleAnimationLeave || handleAnimationLeave
+              ? undefined
+              : props.handleAnimationLeave || handleAnimationLeave
           }
         >
           { props.visible && (
