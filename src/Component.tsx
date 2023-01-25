@@ -305,15 +305,14 @@ export const Sheet = defineComponent({
         <Transition
           css={false}
           onEnter={
-            props.handleAnimationEnter !== undefined ?
-              props.handleAnimationEnter :
-              handleAnimationEnter 
-              
+            props.handleAnimationEnter === null
+              ? undefined
+               : props.handleAnimationEnter || handleAnimationEnter
           }
           onLeave={
-            props.handleAnimationLeave !== undefined ?
-              props.handleAnimationLeave :
-              handleAnimationLeave
+            props.handleAnimationLeave === null
+              ? undefined :
+              props.handleAnimationLeave || handleAnimationLeave
           }
         >
           { props.visible && (
