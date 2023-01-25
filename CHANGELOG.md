@@ -1,3 +1,9 @@
+# 2.0.3
+
+- Fixed touch device interactive element issues. It was because of preventing default behavior of `touchstart` event. Now `touchmove` event is prevented to block scrolling.
+
+<br>
+
 # 2.0.2
 
 - Added `overflow: hidden` style to `bottom-sheet-backdrop` to fix scroll bar issues.
