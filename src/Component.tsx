@@ -272,9 +272,13 @@ export const Sheet = defineComponent({
 
     function handleAnimationLeave(backdrop: Element, done: () => void) {
       const sheetEl = backdrop.querySelector('.bottom-sheet')!
+      const currentBackground = window.getComputedStyle(backdrop).backgroundColor
 
       backdrop.animate(
-        [{ backgroundColor: 'rgba(0, 0, 0, 0)' }],
+        [
+          { backgroundColor: currentBackground },
+          { backgroundColor: 'rgba(0, 0, 0, 0)' },
+        ],
         {
           duration: 300,
           easing: 'ease',
