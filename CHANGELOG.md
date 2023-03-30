@@ -1,3 +1,7 @@
+# 2.0.4
+
+- Fixed leave animation for devices that does not support single frames.
+
 # 2.0.3
 
 - Fixed touch device interactive element issues. It was because of preventing default behavior of `touchstart` event. Now `touchmove` event is prevented to block scrolling.
