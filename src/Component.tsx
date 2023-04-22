@@ -21,7 +21,7 @@ const SheetRenderer = defineComponent({
   setup(props, { emit, slots }) {
     const context = useBottomSheet()
 
-    const element = ref<HTMLDivElement>(null!)
+    const element = ref<HTMLDivElement | null>(null)
 
     onUnmounted(() => emit('updateElement', null))
 
@@ -45,7 +45,8 @@ const SheetRenderer = defineComponent({
     let preSwipeHeight = 0
 
     function syncHeight() {
-      preSwipeHeight = element.value.getBoundingClientRect().height
+      if (element.value)
+        preSwipeHeight = element.value.getBoundingClientRect().height
     }
 
     function reset() {
@@ -59,6 +60,10 @@ const SheetRenderer = defineComponent({
     }
 
     function handleSwipe(e: MouseEvent | TouchEvent) {
+      const el = element.value
+      if (!el)
+        return
+
       if (!swipeStarted)
         return
 
@@ -80,12 +85,12 @@ const SheetRenderer = defineComponent({
       listenBackdropClick = false
 
       if (swipedPixels.value < 0 && !props.noStretch) {
-        element.value.style.setProperty('height', `${preSwipeHeight + Math.abs(swipedPixels.value)}px`)
-        element.value.style.setProperty('max-height', 'none')
+        el.style.setProperty('height', `${preSwipeHeight + Math.abs(swipedPixels.value)}px`)
+        el.style.setProperty('max-height', 'none')
       }
       else {
-        element.value.style.removeProperty('height')
-        element.value.style.removeProperty('max-height')
+        el.style.removeProperty('height')
+        el.style.removeProperty('max-height')
       }
     }
 
@@ -102,7 +107,9 @@ const SheetRenderer = defineComponent({
     }
 
     function handleSwipeEnd() {
-      if (!swipeStarted)
+      const el = element.value
+
+      if (!swipeStarted || !el)
         return
 
       if (swipedPixels.value >= props.threshold) {
@@ -112,17 +119,20 @@ const SheetRenderer = defineComponent({
         setTimeout(() => {
           listenBackdropClick = true
 
-          const anim = element.value?.animate(
-            [{ height: `${preSwipeHeight}px` }],
+          const anim = el.animate(
+            [
+              { height: el.style.height },
+              { height: `${preSwipeHeight}px` },
+            ],
             {
               duration: 200,
               easing: 'ease',
             },
           )
 
-          anim?.addEventListener('finish', () => {
-            element.value.style.removeProperty('height')
-            element.value.style.removeProperty('max-height')
+          anim.addEventListener('finish', () => {
+            el.style.removeProperty('height')
+            el.style.removeProperty('max-height')
           })
         })
       }
@@ -271,7 +281,7 @@ export const Sheet = defineComponent({
     }
 
     function handleAnimationLeave(backdrop: Element, done: () => void) {
-      const sheetEl = backdrop.querySelector('.bottom-sheet')!
+      const sheetEl = backdrop.querySelector('.bottom-sheet') as HTMLDivElement
       const currentBackground = window.getComputedStyle(backdrop).backgroundColor
 
       backdrop.animate(
@@ -287,6 +297,7 @@ export const Sheet = defineComponent({
 
       const anim = sheetEl.animate(
         [
+          { transform: sheetEl.style.transform },
           { transform: 'translateY(100%)' },
         ],
         {
