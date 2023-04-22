@@ -1,3 +1,8 @@
+# 2.0.5
+
+- Added initial frames to animations for unsupported devices.
+- Now backdrop element is fixed instead of absolute.
+
 # 2.0.4
 
 - Fixed leave animation for devices that does not support single frames.
